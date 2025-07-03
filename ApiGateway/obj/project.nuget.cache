@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "23bmngeGCk17hyHnjvY/UbQx7wBNElWBJkaWkAEK6ofbh1qnZr58j9fpxukXxIe37Wk/yR+RUobfdzn1t7ntKQ==",
+  "success": true,
+  "projectFilePath": "/Users/ravikandel/development/a/MicroService_Net_Core/ApiGateway/ApiGateway.csproj",
+  "expectedPackageFiles": [
+    "/Users/ravikandel/.nuget/packages/system.io.hashing/8.0.0/system.io.hashing.8.0.0.nupkg.sha512",
+    "/Users/ravikandel/.nuget/packages/yarp.reverseproxy/2.3.0/yarp.reverseproxy.2.3.0.nupkg.sha512"
+  ],
+  "logs": []
+}
