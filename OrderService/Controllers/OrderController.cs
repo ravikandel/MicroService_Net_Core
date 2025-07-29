@@ -1,87 +1,276 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Net.Http.Json;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using OrderService.Data;
+using OrderService.Models;
 
 namespace OrderService.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class OrderController : ControllerBase
+    [ApiVersion("1.0")]
+    public class OrderController(OrderDbContext dbContext, HttpClient httpClient, IOptions<ApiGatewayOptions> options) : BaseController
     {
-        private static readonly List<Order> _orders = new List<Order>();
-
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly string _apiGatewayBaseUrl;
-
-        // Constructor injection of IHttpClientFactory and IOptions<ApiGatewayOptions>
-        public OrderController(IHttpClientFactory httpClientFactory, IOptions<ApiGatewayOptions> options)
-        {
-            _httpClientFactory = httpClientFactory;
-            _apiGatewayBaseUrl = options.Value.BaseUrl;
-        }
+        private readonly HttpClient _httpClient = httpClient;
+        private readonly string _apiGatewayBaseUrl = options.Value.BaseUrl;
+        private readonly OrderDbContext _dbContext = dbContext;
 
         [HttpGet]
-        public IActionResult Get() => Ok(_orders);
-
-        [HttpGet("{id}")]
-        public ActionResult<Order> Get(int id)
+        public async Task<IActionResult> GetAllOrders()
         {
-            var order = _orders.FirstOrDefault(o => o.Id == id);
-            if (order == null) return NotFound("Order not found");
-            return Ok(order);
+            var OrderDtos = await _dbContext.Orders
+                .Select(o => new OrderResponseDto
+                {
+                    OrderId = o.Id,
+                    OrderName = o.Name,
+                    TotalAmount = o.TotalAmount,
+                    OrderStaus = o.OrderStaus,
+                    OrderDate = o.OrderDate,
+                })
+                .ToListAsync();
+
+            // never returns null
+            // It always returns a list object, even if there are zero items in the query
+            // So OrderDtos is guaranteed to be a non-null list, possibly empty
+
+            if (!OrderDtos.Any())
+            {
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "No Orders found!",
+                });
+            }
+
+            return Ok(new Response<IEnumerable<OrderResponseDto>>
+            {
+                StatusCode = EResult.Success,
+                Message = "Orders retrieved successfully",
+                Data = OrderDtos
+            });
         }
 
-        [HttpGet("{id}/details")]
-        public async Task<ActionResult<OrderDetails>> GetOrderDetails(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
         {
-            var order = _orders.FirstOrDefault(o => o.Id == id);
+            var order = await _dbContext.Orders
+                        .Include(o => o.OrderDetails)
+                        .FirstOrDefaultAsync(o => o.Id == id);
+
             if (order == null)
-                return NotFound("Order not found");
-
-            var client = _httpClientFactory.CreateClient();
-
-            // Use the configured API Gateway base URL to call ProductService
-            var productServiceUrl = $"{_apiGatewayBaseUrl}/product/api/products/{order.ProductId}";
-
-            var product = await client.GetFromJsonAsync<ProductDto>(productServiceUrl);
-
-            if (product == null)
-                return NotFound("Product not found");
-
-            var orderDetails = new OrderDetails
             {
-                Id = order.Id,
-                Name = order.Name,
-                ProductId = order.ProductId,
-                Quantity = order.Quantity,
-                CreatedAt = order.CreatedAt,
-                ProductName = product.Name,
-                ProductPrice = product.Price
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Order not found!",
+                });
+            }
+
+            var orderDetailDtos = new List<OrderDetailDto>();
+
+            foreach (var detail in order.OrderDetails)
+            {
+                try
+                {
+                    var productServiceUrl = $"{_apiGatewayBaseUrl}/product/api/v1/product/{detail.ProductId}";
+
+                    // Make the HTTP call and parse the wrapped response
+                    var response = await _httpClient.GetFromJsonAsync<ApiResponse<ProductDto>>(productServiceUrl);
+
+                    string productName = "Unknown";
+
+                    if (response != null && response.StatusCode == 0 && response.Data != null)
+                    {
+                        productName = response.Data.ProductName ?? "Unnamed Product";
+                    }
+
+                    orderDetailDtos.Add(new OrderDetailDto
+                    {
+
+                        ProductId = detail.ProductId,
+                        ProductName = productName,
+                        Quantity = detail.Quantity,
+                        Price = detail.Price
+                    });
+                }
+                catch (HttpRequestException ex)
+                {
+                    return Ok(new Response
+                    {
+                        StatusCode = EResult.Error,
+                        Message = $"Product service is unavailable: {ex.Message}"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return Ok(new Response
+                    {
+                        StatusCode = EResult.Error,
+                        Message = $"An unexpected error occurred: {ex.Message}"
+                    });
+                }
+
+            }
+            var orderDto = new OrderDto
+            {
+                OrderId = order.Id,
+                OrderName = order.Name,
+                OrderDate = order.OrderDate,
+                OrderStaus = order.OrderStaus,
+                TotalAmount = order.TotalAmount,
+                OrderDetails = orderDetailDtos
             };
 
-            return Ok(orderDetails);
+            return Ok(new Response<OrderDto>
+            {
+                StatusCode = EResult.Success,
+                Message = "Order retrieved successfully.",
+                Data = orderDto
+            });
+
         }
 
         [HttpPost]
-        public IActionResult Create(OrderDto orderDto)
+        public async Task<IActionResult> Create([FromBody] OrderInputDto orderInputDto)
         {
-            Order order = new Order
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            decimal totalAmount = 0;
+            var orderDetails = new List<OrderDetail>();
+
+            foreach (var detail in orderInputDto.OrderDetails)
             {
-                Id = _orders.Any() ? _orders.Max(o => o.Id) + 1 : 1,
-                Name = orderDto.Name,
-                ProductId = orderDto.ProductId,
-                Quantity = orderDto.Quantity,
+                try
+                {
+                    var productServiceUrl = $"{_apiGatewayBaseUrl}/product/api/v1/product/{detail.ProductId}";
+
+                    // Make the HTTP call and parse the wrapped response
+                    var response = await _httpClient.GetFromJsonAsync<ApiResponse<ProductDto>>(productServiceUrl);
+
+                    // Check if product was not found or response is invalid
+                    if (response == null || response.StatusCode != 0 || response.Data == null)
+                    {
+                        return Ok(new Response
+                        {
+                            StatusCode = EResult.Error,
+                            Message = $"Product with ID {detail.ProductId} not found!"
+                        });
+                    }
+
+                    var product = response.Data;
+
+                    totalAmount += product.Price * detail.Quantity;
+
+                    orderDetails.Add(new OrderDetail
+                    {
+                        ProductId = product.ProductId,
+                        Quantity = detail.Quantity,
+                        Price = product.Price
+                    });
+                }
+                catch (HttpRequestException ex)
+                {
+                    return Ok(new Response
+                    {
+                        StatusCode = EResult.Error,
+                        Message = $"Product service is unavailable: {ex.Message}"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return Ok(new Response
+                    {
+                        StatusCode = EResult.Error,
+                        Message = $"An unexpected error occurred: {ex.Message}"
+                    });
+                }
+            }
+
+            var order = new Order
+            {
+                Name = orderInputDto.OrderName,
+                OrderDate = DateTime.UtcNow,
+                OrderStaus = 0,
+                TotalAmount = totalAmount,
+                OrderDetails = orderDetails
             };
 
-            _orders.Add(order);
-            return Ok(order);
+            _dbContext.Orders.Add(order);
+            await _dbContext.SaveChangesAsync();
 
-            // Or to follow REST conventions:
-            // return CreatedAtAction(nameof(Get), new { id = order.Id }, order);
+            return Ok(new Response<int>
+            {
+                StatusCode = EResult.Success,
+                Message = "Order created successfully.",
+                Data = order.Id
+            });
+
         }
-    }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] OrderUpdateDto orderUpdateDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingOrder = await _dbContext.Orders.FindAsync(id);
+            if (existingOrder == null)
+            {
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Order not found!",
+                });
+            }
+
+            existingOrder.Name = orderUpdateDto.OrderName;
+            existingOrder.OrderStaus = orderUpdateDto.OrderStaus;
+
+            // No need to call Update explicitly if tracked entity changed
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new Response<int>
+            {
+                StatusCode = EResult.Success,
+                Message = "Order updated successfully.",
+                Data = existingOrder.Id
+            });
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var order = await _dbContext.Orders
+                                  .Include(o => o.OrderDetails)
+                                  .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Order not found!",
+                });
+            }
+
+            // First remove related OrderDetails
+            _dbContext.OrderDetails.RemoveRange(order.OrderDetails);
+
+            // Then remove the Order
+            _dbContext.Orders.Remove(order);
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new Response
+            {
+                StatusCode = EResult.Success,
+                Message = "Order deleted successfully!",
+            });
+        }
+
+    }
 }
+

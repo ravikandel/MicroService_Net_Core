@@ -1,13 +1,35 @@
-public class Order : OrderDto
-{
-    public int Id { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+using System.ComponentModel.DataAnnotations;
 
-}
-
-public class OrderDto
+namespace OrderService.Models
 {
-    public required string Name { get; set; }
-    public int ProductId { get; set; }
-    public int Quantity { get; set; }
+    public class Order
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public string? Name { get; set; }
+        public decimal TotalAmount { get; set; }
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+        public int OrderStaus { get; set; }
+
+        public List<OrderDetail> OrderDetails { get; set; } = [];
+    }
+
+    public class OrderDetail
+    {
+        public int Id { get; set; }
+
+        [Required]
+        public int OrderId { get; set; }
+
+        [Required]
+        public int ProductId { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+
+        public Order? Order { get; set; }
+    }
 }

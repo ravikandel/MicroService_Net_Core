@@ -1,11 +1,18 @@
-public class Product : ProductDto
-{
-    public int Id { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
-}
+using System.ComponentModel.DataAnnotations;
 
-public class ProductDto {
-    public required string Name { get; set; }
-    public decimal Price { get; set; }
+namespace ProductService.Models
+{
+    public class Product
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public string? Name { get; set; }
+
+        [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
+        public decimal Price { get; set; }
+
+    }
 }
