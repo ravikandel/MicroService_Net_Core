@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 
-namespace AuthService.Services
+namespace AuthService.Configurations
 {
     public class SwaggerService(IApiVersionDescriptionProvider provider) : IConfigureOptions<SwaggerGenOptions>
     {

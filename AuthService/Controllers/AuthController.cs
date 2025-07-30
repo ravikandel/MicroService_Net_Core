@@ -1,33 +1,66 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AuthService.Data;
 using AuthService.Models;
-using AuthService.Services;
-using AuthService.Services.JWT;
+using AuthService.DTOs;
+using AuthService.Configurations.JWT;
+using AuthService.Common;
+using Microsoft.AspNetCore.Identity;
 
 namespace AuthService.Controllers
 {
     [ApiVersion("1.0")]
-    public class AuthController(UserService userService, AuthDbContext context) : BaseController
+    public class AuthController(IAuthLogic logic) : BaseController
     {
-        private readonly UserService _userService = userService;
-        private readonly AuthDbContext _context = context;
+        private readonly IAuthLogic _logic = logic;
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginInputDto loginInputDto)
         {
-            var user = await _userService.ValidateUser(loginInputDto.Username, loginInputDto.Password);
-            if (user == null) return Ok(new Response
+            if (!ModelState.IsValid)
             {
-                StatusCode = EResult.Error,
-                Message = "Invalid Username or Password!"
-            });
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Username or Password are required!",
+                });
+            }
 
+            var user = await _logic.ValidateUser(loginInputDto);
+            if (user == null || string.IsNullOrEmpty(user.Password))
+            {
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Invalid Username or Password!"
+                });
+            }
+
+            var passwordHasher = new PasswordHasher<User>();
+            var result = passwordHasher.VerifyHashedPassword(user, user.Password, loginInputDto.Password);
+
+            if (result != PasswordVerificationResult.Success)
+            {
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Incorrect Username or Password!"
+                });
+            }
+
+            // create Token
             JwtConfig jwtConfig = new();
             var accessToken = jwtConfig.GetToken(user);
-            user.AccessToken = accessToken;
 
-            await _context.SaveChangesAsync();
+            // update Token 
+            bool isSuccess = await _logic.UpdateUserToken(user, accessToken);
+
+            if (!isSuccess)
+            {
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Token creation failed. Try again!"
+                });
+            }
 
             return Ok(new Response<LoginResponseDto>
             {
@@ -38,9 +71,7 @@ namespace AuthService.Controllers
                     AccessToken = accessToken
                 }
             });
+
         }
-
-
-
     }
 }

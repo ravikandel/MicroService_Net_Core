@@ -5,7 +5,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using AuthService.Data;
-using AuthService.Services;
+using AuthService.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +24,7 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
         sql.MigrationsHistoryTable("__EFMigrationsHistory", "Auth");
     }));
 
+builder.Services.RegisterServicesAndRepositories();
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -41,8 +42,6 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerServi
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
-
-builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

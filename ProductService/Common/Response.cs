@@ -1,6 +1,6 @@
 
 
-namespace AuthService.Models
+namespace ProductService.Common
 {
 
     public enum EResult

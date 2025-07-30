@@ -5,10 +5,10 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using ProductService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ProductService.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +33,9 @@ builder.Services.AddDbContext<ProductDbContext>(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.Configure<ApiGatewayOptions>(builder.Configuration.GetSection("ApiGateway"));
-builder.Services.AddHttpClient();
+// builder.Services.AddHttpClient();
+
+builder.Services.RegisterServicesAndRepositories();
 
 // API versioning
 builder.Services.AddApiVersioning(options =>

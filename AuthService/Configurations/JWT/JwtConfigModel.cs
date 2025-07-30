@@ -1,4 +1,4 @@
-﻿namespace AuthService.Services.JWT
+﻿namespace AuthService.Configurations.JWT
 {
     public class JwtConfigModel
     {

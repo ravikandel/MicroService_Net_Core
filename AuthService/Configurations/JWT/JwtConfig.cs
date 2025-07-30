@@ -1,6 +1,6 @@
 ﻿using AuthService.Models;
 
-namespace AuthService.Services.JWT
+namespace AuthService.Configurations.JWT
 {
     public class JwtConfig
     {

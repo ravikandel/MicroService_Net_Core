@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace AuthService.Services.JWT
+namespace AuthService.Configurations.JWT
 {
     public sealed class JwtTokenBuilder
     {

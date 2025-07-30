@@ -1,28 +1,21 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProductService.Data;
-using ProductService.Models;
+using ProductService.Common;
+using ProductService.DTOs;
 
 namespace ProductService.Controllers
 {
     [ApiVersion("1.0")]
     [Authorize]
-    public class ProductController(ProductDbContext dbContext) : BaseController
+    public class ProductController(IProductLogic logic) : BaseController
     {
-        private readonly ProductDbContext _dbContext = dbContext;
+        private readonly IProductLogic _logic = logic;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var productDtos = await _dbContext.Products
-                .Select(p => new ProductDto
-                {
-                    ProductId = p.Id,
-                    ProductName = p.Name,
-                    Price = p.Price
-                })
-                .ToListAsync();
+            var productDtos = await _logic.GetAllAsync();
 
             if (!productDtos.Any())
             {
@@ -36,17 +29,17 @@ namespace ProductService.Controllers
             return Ok(new Response<IEnumerable<ProductDto>>
             {
                 StatusCode = EResult.Success,
-                Message = "Products retrieved successfully",
+                Message = "Products retrieved successfully!",
                 Data = productDtos
             });
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
-            var product = await _dbContext.Products.FindAsync(id);
+            var productDto = await _logic.GetAsync(id);
 
-            if (product == null)
+            if (productDto == null)
             {
                 return Ok(new Response
                 {
@@ -55,17 +48,10 @@ namespace ProductService.Controllers
                 });
             }
 
-            var productDto = new ProductDto
-            {
-                ProductId = product.Id,
-                ProductName = product.Name,
-                Price = product.Price
-            };
-
             return Ok(new Response<ProductDto>
             {
                 StatusCode = EResult.Success,
-                Message = "Product retrieved successfully.",
+                Message = "Product retrieved successfully!",
                 Data = productDto
             });
         }
@@ -75,78 +61,60 @@ namespace ProductService.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Product information are required!",
+                });
             }
 
-            var product = new Product
-            {
-                Name = productInputDto.ProductName,
-                Price = productInputDto.Price
-            };
-
-            _dbContext.Products.Add(product);
-            await _dbContext.SaveChangesAsync();
-
-            var newProductDto = new ProductDto
-            {
-                ProductId = product.Id,
-                ProductName = product.Name,
-                Price = product.Price
-            };
+            var createdProduct = await _logic.CreateAsync(productInputDto);
 
             return Ok(new Response<ProductDto>
             {
                 StatusCode = EResult.Success,
-                Message = "Product created successfully.",
-                Data = newProductDto
+                Message = "Product created successfully!",
+                Data = createdProduct
             });
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ProductInputDto productInputDto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Product information are required!",
+                });
             }
+            var updatedProduct = await _logic.UpdateAsync(id, productInputDto);
 
-            var existingProduct = await _dbContext.Products.FindAsync(id);
-            if (existingProduct == null)
+            if (updatedProduct == null)
             {
                 return Ok(new Response
                 {
                     StatusCode = EResult.Error,
-                    Message = "Product not found!",
+                    Message = "Product not found!"
                 });
             }
-
-            existingProduct.Name = productInputDto.ProductName;
-            existingProduct.Price = productInputDto.Price;
-
-            // No need to call Update explicitly if tracked entity changed
-            await _dbContext.SaveChangesAsync();
-
-            var updatedDto = new ProductDto
-            {
-                ProductId = existingProduct.Id,
-                ProductName = existingProduct.Name,
-                Price = existingProduct.Price
-            };
 
             return Ok(new Response<ProductDto>
             {
                 StatusCode = EResult.Success,
-                Message = "Product updated successfully.",
-                Data = updatedDto
+                Message = "Product updated successfully!",
+                Data = updatedProduct
             });
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var product = await _dbContext.Products.FindAsync(id);
+            var result = await _logic.DeleteAsync(id);
 
-            if (product == null)
+            if (!result)
             {
                 return Ok(new Response
                 {
@@ -155,13 +123,10 @@ namespace ProductService.Controllers
                 });
             }
 
-            _dbContext.Products.Remove(product);
-            await _dbContext.SaveChangesAsync();
-
             return Ok(new Response
             {
                 StatusCode = EResult.Success,
-                Message = "Product deleted successfully!",
+                Message = "Product deleted successfully!"
             });
         }
     }
