@@ -1,4 +1,4 @@
-namespace OrderService.Models
+namespace OrderService.Common
 {
     public class ApiResponse<T>
     {

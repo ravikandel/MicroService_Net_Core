@@ -35,7 +35,7 @@ builder.Services.AddDbContext<ProductDbContext>(options =>
 builder.Services.Configure<ApiGatewayOptions>(builder.Configuration.GetSection("ApiGateway"));
 // builder.Services.AddHttpClient();
 
-builder.Services.RegisterServicesAndRepositories();
+builder.Services.RegisterLogicAndRepository();
 
 // API versioning
 builder.Services.AddApiVersioning(options =>

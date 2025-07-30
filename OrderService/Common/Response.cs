@@ -1,6 +1,6 @@
 
 
-namespace OrderService.Models
+namespace OrderService.Common
 {
 
     public enum EResult

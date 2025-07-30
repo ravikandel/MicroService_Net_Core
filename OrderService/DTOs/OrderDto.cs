@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OrderService.Models
+namespace OrderService.DTOs
 {
     public class OrderResponseDto
     {

@@ -2,7 +2,9 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using OrderService.Common;
 using OrderService.Data;
+using OrderService.DTOs;
 using OrderService.Models;
 
 namespace OrderService.Controllers

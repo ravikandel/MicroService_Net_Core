@@ -1,6 +1,6 @@
-public static class ServiceRegistrationExtensions
+public static class LogicRepositoryRegistration
 {
-    public static void RegisterServicesAndRepositories(this IServiceCollection services)
+    public static void RegisterLogicAndRepository(this IServiceCollection services)
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 

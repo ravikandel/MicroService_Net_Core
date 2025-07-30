@@ -24,7 +24,7 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
         sql.MigrationsHistoryTable("__EFMigrationsHistory", "Auth");
     }));
 
-builder.Services.RegisterServicesAndRepositories();
+builder.Services.RegisterLogicAndRepository();
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);

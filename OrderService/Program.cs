@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using OrderService.Data;
 using Microsoft.EntityFrameworkCore;
-using OrderService.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using OrderService.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +34,8 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.Configure<ApiGatewayOptions>(builder.Configuration.GetSection("ApiGateway"));
 builder.Services.AddHttpClient();
+
+builder.Services.RegisterLogicAndRepository();
 
 // API versioning
 builder.Services.AddApiVersioning(options =>
