@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ProductService.Configurations;
+using ProductService.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -4,56 +4,60 @@ using AuthService.DTOs;
 using AuthService.Models;
 using Microsoft.AspNetCore.Identity;
 
-public class AuthRepository : IAuthRepository
+
+namespace AuthService.Repository
 {
-    private readonly AuthDbContext _context;
-
-    public AuthRepository(AuthDbContext context)
+    public class AuthRepository : IAuthRepository
     {
-        _context = context;
+        private readonly AuthDbContext _context;
 
-        if (!_context.Users.Any())
+        public AuthRepository(AuthDbContext context)
         {
-            var passwordHasher = new PasswordHasher<User>();
+            _context = context;
 
-            var adminUser = new User
+            if (!_context.Users.Any())
             {
-                Username = "admin",
-                Email = "admin@admin.com",
-                Role = "admin",
-            };
+                var passwordHasher = new PasswordHasher<User>();
 
-            // Hash the password
-            adminUser.Password = passwordHasher.HashPassword(adminUser, "admin");
+                var adminUser = new User
+                {
+                    Username = "admin",
+                    Email = "admin@admin.com",
+                    Role = "admin",
+                };
 
-            // Save to DB
-            _context.Users.Add(adminUser);
-            _context.SaveChanges();
+                // Hash the password
+                adminUser.Password = passwordHasher.HashPassword(adminUser, "admin");
+
+                // Save to DB
+                _context.Users.Add(adminUser);
+                _context.SaveChanges();
+            }
         }
-    }
-    public async Task<User?> ValidateUser(LoginInputDto loginInputDto)
-    {
-        var usernameOrEmail = loginInputDto.Username.Trim().ToLower();
-
-        return await _context.Users
-            .FirstOrDefaultAsync(u =>
-                u.Username!.ToLower() == usernameOrEmail || u.Email!.ToLower() == usernameOrEmail);
-    }
-
-
-    public async Task<bool> UpdateUserToken(User user, string accessToken)
-    {
-        try
+        public async Task<User?> ValidateUser(LoginInputDto loginInputDto)
         {
-            user.AccessToken = accessToken;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
+            var usernameOrEmail = loginInputDto.Username.Trim().ToLower();
 
+            return await _context.Users
+                .FirstOrDefaultAsync(u =>
+                    u.Username!.ToLower() == usernameOrEmail || u.Email!.ToLower() == usernameOrEmail);
+        }
+
+
+        public async Task<bool> UpdateUserToken(User user, string accessToken)
+        {
+            try
+            {
+                user.AccessToken = accessToken;
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+    }
 }

@@ -1,63 +1,45 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using OrderService.Common;
-using OrderService.Data;
 using OrderService.DTOs;
+using OrderService.ExternalServices;
+using OrderService.Logic;
 using OrderService.Models;
 
 namespace OrderService.Controllers
 {
     [ApiVersion("1.0")]
-    public class OrderController(OrderDbContext dbContext, HttpClient httpClient, IOptions<ApiGatewayOptions> options) : BaseController
+    public class OrderController(IOrderLogic logic, IProductServiceClient productService) : BaseController
     {
-        private readonly HttpClient _httpClient = httpClient;
-        private readonly string _apiGatewayBaseUrl = options.Value.BaseUrl;
-        private readonly OrderDbContext _dbContext = dbContext;
+        private readonly IOrderLogic _logic = logic;
+        private readonly IProductServiceClient _productService = productService;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var OrderDtos = await _dbContext.Orders
-                .Select(o => new OrderResponseDto
-                {
-                    OrderId = o.Id,
-                    OrderName = o.Name,
-                    TotalAmount = o.TotalAmount,
-                    OrderStaus = o.OrderStaus,
-                    OrderDate = o.OrderDate,
-                })
-                .ToListAsync();
+            var orderResponseDto = await _logic.GetAllAsync();
 
-            // never returns null
-            // It always returns a list object, even if there are zero items in the query
-            // So OrderDtos is guaranteed to be a non-null list, possibly empty
-
-            if (!OrderDtos.Any())
+            if (!orderResponseDto.Any())
             {
                 return Ok(new Response
                 {
                     StatusCode = EResult.Error,
-                    Message = "No Orders found!",
+                    Message = "No orders found!",
                 });
             }
 
             return Ok(new Response<IEnumerable<OrderResponseDto>>
             {
                 StatusCode = EResult.Success,
-                Message = "Orders retrieved successfully",
-                Data = OrderDtos
+                Message = "Orders retrieved successfully!",
+                Data = orderResponseDto
             });
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var order = await _dbContext.Orders
-                        .Include(o => o.OrderDetails)
-                        .FirstOrDefaultAsync(o => o.Id == id);
-
+            var order = await _logic.GetAsync(id);
             if (order == null)
             {
                 return Ok(new Response
@@ -71,47 +53,19 @@ namespace OrderService.Controllers
 
             foreach (var detail in order.OrderDetails)
             {
-                try
+                var product = await _productService.GetProductAsync(detail.ProductId);
+
+                var productName = product?.ProductName ?? "Unnamed Product";
+
+                orderDetailDtos.Add(new OrderDetailDto
                 {
-                    var productServiceUrl = $"{_apiGatewayBaseUrl}/product/api/v1/product/{detail.ProductId}";
-
-                    // Make the HTTP call and parse the wrapped response
-                    var response = await _httpClient.GetFromJsonAsync<ApiResponse<ProductDto>>(productServiceUrl);
-
-                    string productName = "Unknown";
-
-                    if (response != null && response.StatusCode == 0 && response.Data != null)
-                    {
-                        productName = response.Data.ProductName ?? "Unnamed Product";
-                    }
-
-                    orderDetailDtos.Add(new OrderDetailDto
-                    {
-
-                        ProductId = detail.ProductId,
-                        ProductName = productName,
-                        Quantity = detail.Quantity,
-                        Price = detail.Price
-                    });
-                }
-                catch (HttpRequestException ex)
-                {
-                    return Ok(new Response
-                    {
-                        StatusCode = EResult.Error,
-                        Message = $"Product service is unavailable: {ex.Message}"
-                    });
-                }
-                catch (Exception ex)
-                {
-                    return Ok(new Response
-                    {
-                        StatusCode = EResult.Error,
-                        Message = $"An unexpected error occurred: {ex.Message}"
-                    });
-                }
-
+                    ProductId = detail.ProductId,
+                    ProductName = productName,
+                    Quantity = detail.Quantity,
+                    Price = detail.Price
+                });
             }
+
             var orderDto = new OrderDto
             {
                 OrderId = order.Id,
@@ -128,29 +82,31 @@ namespace OrderService.Controllers
                 Message = "Order retrieved successfully.",
                 Data = orderDto
             });
-
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] OrderInputDto orderInputDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Order information are required!",
+                });
+            }
 
             decimal totalAmount = 0;
             var orderDetails = new List<OrderDetail>();
 
             foreach (var detail in orderInputDto.OrderDetails)
             {
+                ProductDto? product = null;
                 try
                 {
-                    var productServiceUrl = $"{_apiGatewayBaseUrl}/product/api/v1/product/{detail.ProductId}";
+                    product = await _productService.GetProductAsync(detail.ProductId);
 
-                    // Make the HTTP call and parse the wrapped response
-                    var response = await _httpClient.GetFromJsonAsync<ApiResponse<ProductDto>>(productServiceUrl);
-
-                    // Check if product was not found or response is invalid
-                    if (response == null || response.StatusCode != 0 || response.Data == null)
+                    if (product == null)
                     {
                         return Ok(new Response
                         {
@@ -158,8 +114,6 @@ namespace OrderService.Controllers
                             Message = $"Product with ID {detail.ProductId} not found!"
                         });
                     }
-
-                    var product = response.Data;
 
                     totalAmount += product.Price * detail.Quantity;
 
@@ -170,12 +124,28 @@ namespace OrderService.Controllers
                         Price = product.Price
                     });
                 }
-                catch (HttpRequestException ex)
+                catch (HttpRequestException httpEx)
                 {
                     return Ok(new Response
                     {
                         StatusCode = EResult.Error,
-                        Message = $"Product service is unavailable: {ex.Message}"
+                        Message = $"[ProductService] HTTP error: {httpEx.Message}"
+                    });
+                }
+                catch (NotSupportedException notSupportedEx)
+                {
+                    return Ok(new Response
+                    {
+                        StatusCode = EResult.Error,
+                        Message = $"[ProductService] Response content type is not supported: {notSupportedEx.Message}"
+                    });
+                }
+                catch (JsonException jsonEx)
+                {
+                    return Ok(new Response
+                    {
+                        StatusCode = EResult.Error,
+                        Message = $"ProductService] JSON deserialization error: {jsonEx.Message}"
                     });
                 }
                 catch (Exception ex)
@@ -183,7 +153,7 @@ namespace OrderService.Controllers
                     return Ok(new Response
                     {
                         StatusCode = EResult.Error,
-                        Message = $"An unexpected error occurred: {ex.Message}"
+                        Message = $"[ProductService] Unexpected error: {ex.Message}"
                     });
                 }
             }
@@ -197,16 +167,23 @@ namespace OrderService.Controllers
                 OrderDetails = orderDetails
             };
 
-            _dbContext.Orders.Add(order);
-            await _dbContext.SaveChangesAsync();
+            var orderResponseDto = await _logic.CreateAsync(order);
 
-            return Ok(new Response<int>
+            if (orderResponseDto == null)
+            {
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Order cannot be created. Try Again!"
+                });
+            }
+
+            return Ok(new Response<OrderResponseDto>
             {
                 StatusCode = EResult.Success,
-                Message = "Order created successfully.",
-                Data = order.Id
+                Message = "Order created successfully!",
+                Data = orderResponseDto
             });
-
         }
 
         [HttpPut("{id}")]
@@ -214,42 +191,38 @@ namespace OrderService.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return Ok(new Response
+                {
+                    StatusCode = EResult.Error,
+                    Message = "Order information are required!",
+                });
             }
+            var orderResponseDto = await _logic.UpdateAsync(id, orderUpdateDto);
 
-            var existingOrder = await _dbContext.Orders.FindAsync(id);
-            if (existingOrder == null)
+            if (orderResponseDto == null)
             {
                 return Ok(new Response
                 {
                     StatusCode = EResult.Error,
-                    Message = "Order not found!",
+                    Message = "Order not found!"
                 });
             }
 
-            existingOrder.Name = orderUpdateDto.OrderName;
-            existingOrder.OrderStaus = orderUpdateDto.OrderStaus;
-
-            // No need to call Update explicitly if tracked entity changed
-            await _dbContext.SaveChangesAsync();
-
-            return Ok(new Response<int>
+            return Ok(new Response<OrderResponseDto>
             {
                 StatusCode = EResult.Success,
-                Message = "Order updated successfully.",
-                Data = existingOrder.Id
+                Message = "Order updated successfully!",
+                Data = orderResponseDto
             });
-        }
 
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var order = await _dbContext.Orders
-                                  .Include(o => o.OrderDetails)
-                                  .FirstOrDefaultAsync(o => o.Id == id);
+            var result = await _logic.DeleteAsync(id);
 
-            if (order == null)
+            if (!result)
             {
                 return Ok(new Response
                 {
@@ -258,18 +231,10 @@ namespace OrderService.Controllers
                 });
             }
 
-            // First remove related OrderDetails
-            _dbContext.OrderDetails.RemoveRange(order.OrderDetails);
-
-            // Then remove the Order
-            _dbContext.Orders.Remove(order);
-
-            await _dbContext.SaveChangesAsync();
-
             return Ok(new Response
             {
                 StatusCode = EResult.Success,
-                Message = "Order deleted successfully!",
+                Message = "Order deleted successfully!"
             });
         }
 

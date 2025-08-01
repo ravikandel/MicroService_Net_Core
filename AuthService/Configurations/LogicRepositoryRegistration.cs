@@ -1,19 +1,22 @@
-public static class LogicRepositoryRegistration
+namespace AuthService.Configurations
 {
-    public static void RegisterLogicAndRepository(this IServiceCollection services)
+    public static class LogicRepositoryRegistration
     {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-        var types = assemblies
-            .SelectMany(s => s.GetTypes())
-            .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Logic") || t.Name.EndsWith("Repository"));
-
-        foreach (var type in types)
+        public static void RegisterLogicAndRepository(this IServiceCollection services)
         {
-            var interfaceType = type.GetInterface($"I{type.Name}");
-            if (interfaceType != null)
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            var types = assemblies
+                .SelectMany(s => s.GetTypes())
+                .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Logic") || t.Name.EndsWith("Repository") || t.Name.EndsWith("ServiceClient"));
+
+            foreach (var type in types)
             {
-                services.AddScoped(interfaceType, type);
+                var interfaceType = type.GetInterface($"I{type.Name}");
+                if (interfaceType != null)
+                {
+                    services.AddScoped(interfaceType, type);
+                }
             }
         }
     }

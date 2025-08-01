@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using OrderService.Configurations;
+using OrderService.Common;
+using OrderService.ExternalServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,12 +29,14 @@ CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 builder.Services.AddDbContext<OrderDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sql =>
     {
-        // ✅ Store EF migrations history table in the "Auth" schema
+        // Store EF migrations history table in the "Auth" schema
         sql.MigrationsHistoryTable("__EFMigrationsHistory", "Order");
     }));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.Configure<ApiGatewayOptions>(builder.Configuration.GetSection("ApiGateway"));
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddHttpClient();
 
 builder.Services.RegisterLogicAndRepository();

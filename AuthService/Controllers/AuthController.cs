@@ -4,6 +4,7 @@ using AuthService.DTOs;
 using AuthService.Configurations.JWT;
 using AuthService.Common;
 using Microsoft.AspNetCore.Identity;
+using AuthService.Logic;
 
 namespace AuthService.Controllers
 {

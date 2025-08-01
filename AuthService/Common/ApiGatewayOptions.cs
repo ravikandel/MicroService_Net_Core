@@ -1,4 +1,8 @@
-public class ApiGatewayOptions
+namespace AuthService.Common
 {
-    public string BaseUrl { get; set; } = string.Empty;
+    public class ApiGatewayOptions
+    {
+        public string BaseUrl { get; set; } = string.Empty;
+    }
+
 }

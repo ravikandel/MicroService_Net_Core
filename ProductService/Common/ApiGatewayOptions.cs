@@ -1,4 +1,7 @@
-public class ApiGatewayOptions
+namespace ProductService.Common
 {
-    public string BaseUrl { get; set; } = string.Empty;
+    public class ApiGatewayOptions
+    {
+        public string BaseUrl { get; set; } = string.Empty;
+    }
 }

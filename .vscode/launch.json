@@ -1,0 +1,52 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "ApiGateway",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/ApiGateway/bin/Debug/net8.0/ApiGateway.dll",
+      "cwd": "${workspaceFolder}/ApiGateway",
+      "stopAtEntry": false,
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "AuthService",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/AuthService/bin/Debug/net8.0/AuthService.dll",
+      "cwd": "${workspaceFolder}/AuthService",
+      "stopAtEntry": false,
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "OrderService",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/OrderService/bin/Debug/net8.0/OrderService.dll",
+      "cwd": "${workspaceFolder}/OrderService",
+      "stopAtEntry": false,
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "ProductService",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/ProductService/bin/Debug/net8.0/ProductService.dll",
+      "cwd": "${workspaceFolder}/ProductService",
+      "stopAtEntry": false,
+      "preLaunchTask": "build"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Run All Services",
+      "configurations": [
+        "ApiGateway",
+        "AuthService",
+        "OrderService",
+        "ProductService"
+      ]
+    }
+  ]
+}

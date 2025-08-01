@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ProductService.Common;
 using ProductService.DTOs;
+using ProductService.Logic;
 
 namespace ProductService.Controllers
 {

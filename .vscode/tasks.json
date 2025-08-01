@@ -2,36 +2,14 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run ApiGateway",
-      "type": "shell",
-      "command": "dotnet run --project ./ApiGateway/ApiGateway.csproj",
-      "problemMatcher": [],
-      "group": "build",
-      "isBackground": true
-    },
-    {
-      "label": "Run AuthService",
-      "type": "shell",
-      "command": "dotnet run --project ./AuthService/AuthService.csproj",
-      "problemMatcher": [],
-      "group": "build",
-      "isBackground": true
-    },
-    {
-      "label": "Run ProductService",
-      "type": "shell",
-      "command": "dotnet run --project ./ProductService/ProductService.csproj",
-      "problemMatcher": [],
-      "group": "build",
-      "isBackground": true
-    },
-    {
-      "label": "Run OrderService",
-      "type": "shell",
-      "command": "dotnet run --project ./OrderService/OrderService.csproj",
-      "problemMatcher": [],
-      "group": "build",
-      "isBackground": true
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/MicroservicesDemo.sln"
+      ],
+      "problemMatcher": "$msCompile"
     }
   ]
 }
