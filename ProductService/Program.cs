@@ -14,15 +14,15 @@ using ProductService.Common;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Kestrel to listen on port from AppSettings -> ServicePort
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenLocalhost(builder.Configuration.GetValue<int>("ServicePort"));
-});
+// builder.WebHost.ConfigureKestrel(options =>
+// {
+//     options.ListenLocalhost(builder.Configuration.GetValue<int>("ServicePort"));
+// });
 
 // Force invariant culture to fix globalization-invariant mode issue
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
-
+    
 // Add services to the container.
 // Read connection string
 builder.Services.AddDbContext<ProductDbContext>(options =>
@@ -82,8 +82,8 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
+// if (app.Environment.IsDevelopment())
+// {
     var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
     app.UseSwagger();
@@ -99,12 +99,12 @@ if (app.Environment.IsDevelopment())
         options.DefaultModelsExpandDepth(-1);
         options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
     });
-}
+// }
 
-if (app.Environment.IsProduction())
-{
-    app.UseHttpsRedirection();
-}
+// if (app.Environment.IsProduction())
+// {
+//     app.UseHttpsRedirection();
+// }
 
 app.UseAuthentication();
 app.UseAuthorization();

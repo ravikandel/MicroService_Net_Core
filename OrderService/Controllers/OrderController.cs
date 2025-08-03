@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Common;
 using OrderService.DTOs;
@@ -9,6 +10,7 @@ using OrderService.Models;
 namespace OrderService.Controllers
 {
     [ApiVersion("1.0")]
+    [Authorize]
     public class OrderController(IOrderLogic logic, IProductServiceClient productService) : BaseController
     {
         private readonly IOrderLogic _logic = logic;

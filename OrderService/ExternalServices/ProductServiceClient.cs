@@ -21,7 +21,7 @@ namespace OrderService.ExternalServices
             return await _retryPolicy.ExecuteAsync(async () =>
             {
 
-                var url = $"{_baseUrl}/product/api/v1/product/{productId}"; // Gateway URL
+                var url = $"{_baseUrl}/product/api/v1/Product/{productId}"; // Gateway URL
 
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
 

@@ -1,0 +1,36 @@
+services:
+  apigateway:
+    build:
+      context: ./ApiGateway
+    ports:
+      - "8000:8000"
+    environment:
+      - ASPNETCORE_URLS=http://+:8000
+    depends_on:
+      - authservice
+      - productservice
+      - orderservice
+
+  authservice:
+    build:
+      context: ./AuthService
+    ports:
+      - "8001:8001"
+    environment:
+      - ASPNETCORE_URLS=http://+:8001
+
+  productservice:
+    build:
+      context: ./ProductService
+    ports:
+      - "8002:8002"
+    environment:
+      - ASPNETCORE_URLS=http://+:8002
+
+  orderservice:
+    build:
+      context: ./OrderService
+    ports:
+      - "8003:8003"
+    environment:
+      - ASPNETCORE_URLS=http://+:8003

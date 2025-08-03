@@ -10,10 +10,10 @@ using AuthService.Configurations;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Kestrel to listen on port from AppSettings -> ServicePort
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenLocalhost(builder.Configuration.GetValue<int>("ServicePort"));
-});
+// builder.WebHost.ConfigureKestrel(options =>
+// {
+//     options.ListenLocalhost(builder.Configuration.GetValue<int>("ServicePort"));
+// });
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
@@ -45,8 +45,8 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
+// if (app.Environment.IsDevelopment())
+// {
     var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
     app.UseSwagger();
     app.UseSwaggerUI(options =>
@@ -61,15 +61,15 @@ if (app.Environment.IsDevelopment())
             options.DefaultModelsExpandDepth(-1);
             options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
         });
-}
+// }
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-if (app.Environment.IsProduction())
-{
-    app.UseHttpsRedirection();
-}
+// if (app.Environment.IsProduction())
+// {
+//     app.UseHttpsRedirection();
+// }
 
 app.MapControllers();
 
