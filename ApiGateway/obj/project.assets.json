@@ -143,11 +143,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/ravikandel/development/a/MicroService_Net_Core/ApiGateway/ApiGateway.csproj",
+      "projectUniqueName": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/ApiGateway.csproj",
       "projectName": "ApiGateway",
-      "projectPath": "/Users/ravikandel/development/a/MicroService_Net_Core/ApiGateway/ApiGateway.csproj",
+      "projectPath": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/ApiGateway.csproj",
       "packagesPath": "/Users/ravikandel/.nuget/packages/",
-      "outputPath": "/Users/ravikandel/development/a/MicroService_Net_Core/ApiGateway/obj/",
+      "outputPath": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/ravikandel/.nuget/NuGet/NuGet.Config"

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ravikandel/development/a/MicroService_Net_Core/OrderService/OrderService.csproj": {}
+    "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/OrderService/OrderService.csproj": {}
   },
   "projects": {
-    "/Users/ravikandel/development/a/MicroService_Net_Core/OrderService/OrderService.csproj": {
+    "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/OrderService/OrderService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ravikandel/development/a/MicroService_Net_Core/OrderService/OrderService.csproj",
+        "projectUniqueName": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/OrderService/OrderService.csproj",
         "projectName": "OrderService",
-        "projectPath": "/Users/ravikandel/development/a/MicroService_Net_Core/OrderService/OrderService.csproj",
+        "projectPath": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/OrderService/OrderService.csproj",
         "packagesPath": "/Users/ravikandel/.nuget/packages/",
-        "outputPath": "/Users/ravikandel/development/a/MicroService_Net_Core/OrderService/obj/",
+        "outputPath": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/OrderService/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/ravikandel/.nuget/NuGet/NuGet.Config"

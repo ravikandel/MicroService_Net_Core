@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ravikandel/development/a/MicroService_Net_Core/ProductService/ProductService.csproj": {}
+    "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ProductService/ProductService.csproj": {}
   },
   "projects": {
-    "/Users/ravikandel/development/a/MicroService_Net_Core/ProductService/ProductService.csproj": {
+    "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ProductService/ProductService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ravikandel/development/a/MicroService_Net_Core/ProductService/ProductService.csproj",
+        "projectUniqueName": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ProductService/ProductService.csproj",
         "projectName": "ProductService",
-        "projectPath": "/Users/ravikandel/development/a/MicroService_Net_Core/ProductService/ProductService.csproj",
+        "projectPath": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ProductService/ProductService.csproj",
         "packagesPath": "/Users/ravikandel/.nuget/packages/",
-        "outputPath": "/Users/ravikandel/development/a/MicroService_Net_Core/ProductService/obj/",
+        "outputPath": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ProductService/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/ravikandel/.nuget/NuGet/NuGet.Config"

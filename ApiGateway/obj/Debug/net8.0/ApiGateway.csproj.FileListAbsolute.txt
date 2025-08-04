@@ -58,3 +58,34 @@
 /Users/ravikandel/development/a/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ref/ApiGateway.dll
 /Users/ravikandel/development/a/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.csproj.Up2Date
 /Users/ravikandel/development/a/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/appsettings.Development.json
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/appsettings.json
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/ApiGateway
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/ApiGateway.deps.json
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/ApiGateway.runtimeconfig.json
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/ApiGateway.dll
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/ApiGateway.pdb
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/System.IO.Hashing.dll
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/bin/Debug/net8.0/Yarp.ReverseProxy.dll
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.csproj.AssemblyReference.cache
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.GeneratedMSBuildEditorConfig.editorconfig
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.AssemblyInfoInputs.cache
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.AssemblyInfo.cs
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.csproj.CoreCompileInputs.cache
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.MvcApplicationPartsAssemblyInfo.cache
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.sourcelink.json
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/staticwebassets.build.json
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/staticwebassets.development.json
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/staticwebassets/msbuild.ApiGateway.Microsoft.AspNetCore.StaticWebAssets.props
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/staticwebassets/msbuild.build.ApiGateway.props
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.ApiGateway.props
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.ApiGateway.props
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/staticwebassets.pack.json
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/scopedcss/bundle/ApiGateway.styles.css
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.csproj.Up2Date
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.dll
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/refint/ApiGateway.dll
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.pdb
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ApiGateway.genruntimeconfig.cache
+/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ApiGateway/obj/Debug/net8.0/ref/ApiGateway.dll

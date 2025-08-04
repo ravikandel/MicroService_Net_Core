@@ -18,14 +18,17 @@ var app = builder.Build();
 
 app.MapGet("/", async context =>
 {
+    var request = context.Request;
+    var baseUrl = $"{request.Scheme}://{request.Host}";
+
     context.Response.ContentType = "text/html";
-    await context.Response.WriteAsync(@"
+    await context.Response.WriteAsync($@"
         <!DOCTYPE html>
         <html>
         <head>
             <title>API Gateway</title>
             <style>
-                body {
+                body {{
                     font-family: Arial, sans-serif;
                     background: #f2f2f2;
                     margin: 0;
@@ -34,29 +37,29 @@ app.MapGet("/", async context =>
                     align-items: center;
                     justify-content: center;
                     height: 100vh;
-                }
-                .container {
+                }}
+                .container {{
                     text-align: center;
                     background: white;
                     padding: 40px;
                     border-radius: 10px;
                     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                }
-                h1 {
+                }}
+                h1 {{
                     color: #007bff;
-                }
-                p {
+                }}
+                p {{
                     color: #555;
-                }
+                }}
             </style>
         </head>
         <body>
             <div class='container'>
                 <h1>API Gateway is Running.</h1>
-                <p>ApiGateway: http://apigateway:8000/</p>
-                <p>AuthService: http://apigateway:8000/auth/</p>
-                <p>ProductService: http://apigateway:8000/product/</p>
-                <p>OrderService: http://apigateway:8000/order/</p>
+                <p>ApiGateway: <a href='{baseUrl}/'>{baseUrl}/</a></p>
+                <p>AuthService: <a href='{baseUrl}/auth/'>{baseUrl}/auth/</a></p>
+                <p>ProductService: <a href='{baseUrl}/product/'>{baseUrl}/product/</a></p>
+                <p>OrderService: <a href='{baseUrl}/order/'>{baseUrl}/order/</a></p>
             </div>
         </body>
         </html>

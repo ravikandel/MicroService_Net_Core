@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ravikandel/development/a/MicroService_Net_Core/AuthService/AuthService.csproj": {}
+    "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/AuthService/AuthService.csproj": {}
   },
   "projects": {
-    "/Users/ravikandel/development/a/MicroService_Net_Core/AuthService/AuthService.csproj": {
+    "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/AuthService/AuthService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ravikandel/development/a/MicroService_Net_Core/AuthService/AuthService.csproj",
+        "projectUniqueName": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/AuthService/AuthService.csproj",
         "projectName": "AuthService",
-        "projectPath": "/Users/ravikandel/development/a/MicroService_Net_Core/AuthService/AuthService.csproj",
+        "projectPath": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/AuthService/AuthService.csproj",
         "packagesPath": "/Users/ravikandel/.nuget/packages/",
-        "outputPath": "/Users/ravikandel/development/a/MicroService_Net_Core/AuthService/obj/",
+        "outputPath": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/AuthService/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/ravikandel/.nuget/NuGet/NuGet.Config"

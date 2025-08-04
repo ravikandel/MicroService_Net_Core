@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KuVepWSuGao=",
+  "dgSpecHash": "gl1XL5GsGdk=",
   "success": true,
-  "projectFilePath": "/Users/ravikandel/development/a/MicroService_Net_Core/ProductService/ProductService.csproj",
+  "projectFilePath": "/Volumes/Backup Volume/Reference Projects/Net 8/MicroService_Net_Core/ProductService/ProductService.csproj",
   "expectedPackageFiles": [
     "/Users/ravikandel/.nuget/packages/azure.core/1.38.0/azure.core.1.38.0.nupkg.sha512",
     "/Users/ravikandel/.nuget/packages/azure.identity/1.11.4/azure.identity.1.11.4.nupkg.sha512",
