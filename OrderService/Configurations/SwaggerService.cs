@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 
 namespace OrderService.Configurations
 {
-     public class SwaggerService(IApiVersionDescriptionProvider provider) : IConfigureOptions<SwaggerGenOptions>
+    public class SwaggerService(IApiVersionDescriptionProvider provider) : IConfigureOptions<SwaggerGenOptions>
     {
         private readonly IApiVersionDescriptionProvider _provider = provider;
 
@@ -21,6 +21,7 @@ namespace OrderService.Configurations
                         Version = description.ApiVersion.ToString(),
                         Description = $"Order Service API Swagger for version {description.ApiVersion}"
                     });
+                options.DocumentFilter<BasePathFilter>("/order"); // Custom filter to rewrite paths
             }
 
             // Optional: Filter endpoints to match doc version
@@ -54,6 +55,26 @@ namespace OrderService.Configurations
                     Array.Empty<string>()
                 }
             });
+        }
+    }
+    public class BasePathFilter : IDocumentFilter
+    {
+        private readonly string _basePath;
+
+        public BasePathFilter(string basePath)
+        {
+            _basePath = basePath;
+        }
+
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        {
+            var paths = swaggerDoc.Paths.ToDictionary(
+                path => _basePath + path.Key,
+                path => path.Value
+            );
+            swaggerDoc.Paths = new OpenApiPaths();
+            foreach (var path in paths)
+                swaggerDoc.Paths.Add(path.Key, path.Value);
         }
     }
 }

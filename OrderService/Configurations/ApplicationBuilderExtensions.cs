@@ -13,7 +13,7 @@ namespace OrderService.Extensions
             {
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                    options.SwaggerEndpoint($"/order/swagger/{description.GroupName}/swagger.json",
                         $"Order Service API {description.GroupName}");
                 }
 

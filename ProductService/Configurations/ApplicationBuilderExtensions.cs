@@ -13,7 +13,7 @@ namespace ProductService.Extensions
             {
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                    options.SwaggerEndpoint($"/product/swagger/{description.GroupName}/swagger.json",
                         $"Product Service API {description.GroupName}");
                 }
 

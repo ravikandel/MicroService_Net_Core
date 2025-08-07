@@ -21,7 +21,9 @@ namespace ProductService.Configurations
                         Version = description.ApiVersion.ToString(),
                         Description = $"Product Service API Swagger for version {description.ApiVersion}"
                     });
+                options.DocumentFilter<BasePathFilter>("/product"); // Custom filter to rewrite paths
             }
+
 
             // Optional: Filter endpoints to match doc version
             options.DocInclusionPredicate((docName, apiDesc) =>
@@ -54,6 +56,26 @@ namespace ProductService.Configurations
                     Array.Empty<string>()
                 }
             });
+        }
+    }
+    public class BasePathFilter : IDocumentFilter
+    {
+        private readonly string _basePath;
+
+        public BasePathFilter(string basePath)
+        {
+            _basePath = basePath;
+        }
+
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        {
+            var paths = swaggerDoc.Paths.ToDictionary(
+                path => _basePath + path.Key,
+                path => path.Value
+            );
+            swaggerDoc.Paths = new OpenApiPaths();
+            foreach (var path in paths)
+                swaggerDoc.Paths.Add(path.Key, path.Value);
         }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace AuthService.Extensions
 {
@@ -13,7 +14,7 @@ namespace AuthService.Extensions
             {
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                    options.SwaggerEndpoint($"/auth/swagger/{description.GroupName}/swagger.json",
                         $"Auth Service API {description.GroupName}");
                 }
 

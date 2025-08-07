@@ -21,6 +21,8 @@ namespace AuthService.Configurations
                         Version = description.ApiVersion.ToString(),
                         Description = $"Auth Service API Swagger for version {description.ApiVersion}"
                     });
+
+                options.DocumentFilter<BasePathFilter>("/auth"); // Custom filter to rewrite paths
             }
 
             // Optional: Hide schema/model section
@@ -28,6 +30,26 @@ namespace AuthService.Configurations
             {
                 return apiDesc.GroupName == docName;
             });
+        }
+    }
+    public class BasePathFilter : IDocumentFilter
+    {
+        private readonly string _basePath;
+
+        public BasePathFilter(string basePath)
+        {
+            _basePath = basePath;
+        }
+
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        {
+            var paths = swaggerDoc.Paths.ToDictionary(
+                path => _basePath + path.Key,
+                path => path.Value
+            );
+            swaggerDoc.Paths = new OpenApiPaths();
+            foreach (var path in paths)
+                swaggerDoc.Paths.Add(path.Key, path.Value);
         }
     }
 }
