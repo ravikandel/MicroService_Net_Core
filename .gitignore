@@ -1,0 +1,94 @@
+## Ignore Visual Studio temporary files, build results, and
+## user-specific files
+
+# Build results
+bin/
+obj/
+[Ll]og/
+*.log
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Files built by Visual Studio
+*.dbmdl
+*.bak
+*.backup
+*.orig
+
+# Include Rider IDE
+.idea/
+*.sln.iml
+
+# Include JetBrains Rider caches
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# User-specific files
+*.vspscc
+*.vssscc
+.vs/
+
+# Build directories
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Tye orchestrator
+.tye/
+
+# .NET Core generated files
+*.dll
+*.exe
+*.app
+*.pdb
+*.cache
+*.mdb
+
+# NuGet packages
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+!**/packages/repositories.config
+
+# Other files
+*.swp
+*.swo
+
+# Rider
+.idea/
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Coverage and testing
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.codecoverage
+
+# Logs
+*.log
+*.tlog
+*.svclog
+
+# Others
+.DS_Store
+Thumbs.db
+
+# Publish folder
+publish/
