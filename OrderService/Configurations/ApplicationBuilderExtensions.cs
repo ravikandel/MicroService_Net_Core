@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
-namespace OrderService.Extensions
+namespace OrderService.Configurations
 {
     public static class ApplicationBuilderExtensions
     {

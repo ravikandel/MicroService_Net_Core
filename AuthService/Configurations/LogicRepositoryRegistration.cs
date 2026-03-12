@@ -4,7 +4,7 @@ namespace AuthService.Configurations
     {
         public static void RegisterLogicAndRepository(this IServiceCollection services)
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var assemblies = new[] { typeof(LogicRepositoryRegistration).Assembly };
 
             var types = assemblies
                 .SelectMany(s => s.GetTypes())

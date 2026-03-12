@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using ProductService.Configurations;
 using ProductService.Common;
 using ProductService.Data;
 using System.Text;
 
-namespace ProductService.Extensions
+namespace ProductService.Configurations
 {
     public static class ServiceCollectionExtensions
     {

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
-namespace ProductService.Extensions
+namespace ProductService.Configurations
 {
     public static class ApplicationBuilderExtensions
     {

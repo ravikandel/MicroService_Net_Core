@@ -1,5 +1,7 @@
 using System.Globalization;
-using OrderService.Extensions;
+using OrderService.Configurations;
+using OrderService.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,15 @@ builder.Services
 
 builder.Services.AddControllers();
 
+
 var app = builder.Build();
+
+// Run migrations automatically on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+    db.Database.Migrate();
+}
 
 // Swagger UI configuration
 app.ConfigureSwaggerUI();

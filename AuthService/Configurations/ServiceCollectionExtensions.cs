@@ -5,7 +5,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using AuthService.Configurations;
 using AuthService.Data;
 
-namespace AuthService.Extensions
+namespace AuthService.Configurations
 {
     public static class ServiceCollectionExtensions
     {

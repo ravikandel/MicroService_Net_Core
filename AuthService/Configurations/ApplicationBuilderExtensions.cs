@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Swashbuckle.AspNetCore.SwaggerUI;
 
-namespace AuthService.Extensions
+namespace AuthService.Configurations
 {
     public static class ApplicationBuilderExtensions
     {

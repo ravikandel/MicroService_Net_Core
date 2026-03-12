@@ -1,5 +1,7 @@
 using System.Globalization;
-using ProductService.Extensions;
+using ProductService.Configurations;
+using ProductService.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +24,15 @@ builder.Services
     .ConfigureCustomOptions(builder.Configuration);
 
 
+
 var app = builder.Build();
+
+// Run migrations automatically on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
+    db.Database.Migrate();
+}
 
 // Swagger UI configuration
 app.ConfigureSwaggerUI();

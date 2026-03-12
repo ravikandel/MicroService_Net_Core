@@ -1,5 +1,7 @@
 using System.Globalization;
-using AuthService.Extensions;
+using AuthService.Configurations;
+using AuthService.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,12 @@ builder.Services
     .AddControllers();
 
 var app = builder.Build();
+// Run migrations automatically on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+    db.Database.Migrate();
+}
 
 // Swagger UI configuration
 app.ConfigureSwaggerUI();

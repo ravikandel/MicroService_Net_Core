@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using OrderService.Configurations;
 using OrderService.Common;
 using OrderService.Data;
 using System.Text;
 
-namespace OrderService.Extensions
+namespace OrderService.Configurations
 {
     public static class ServiceCollectionExtensions
     {
